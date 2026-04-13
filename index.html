@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Archery — Ali Mohamed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --forest: #1b2e1b; --bark: #2e3d20; --moss: #4a6630;
+      --fern: #6b8f47; --sage: #a3bc7e; --parchment: #f5f0e6;
+      --cream: #fdf9f2; --ink: #1a1f14; --gold: #c8a84b; --gold-lt: #e8cc80;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+    .toggle { display: none; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 48px; background: rgba(27,46,27,0.96);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(168,188,126,0.15);
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--sage); letter-spacing: 0.04em; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: rgba(245,240,230,0.65); text-decoration: none; font-size: 13px;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      position: relative; padding-bottom: 4px; transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--gold); transition: width 0.25s;
+    }
+    .nav-links a:hover { color: var(--parchment); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh; background: var(--forest);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; position: relative; overflow: hidden; padding: 0 24px;
+    }
+    .hero-rings { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+    .ring { position: absolute; border-radius: 50%; animation: pulse-ring 4s ease-in-out infinite; }
+    .ring:nth-child(1) { width: 180px; height: 180px; border: 1.5px solid rgba(200,168,75,0.4); animation-delay: 0s; }
+    .ring:nth-child(2) { width: 320px; height: 320px; border: 1px solid rgba(168,188,126,0.2); animation-delay: 0.6s; }
+    .ring:nth-child(3) { width: 480px; height: 480px; border: 1px solid rgba(168,188,126,0.1); animation-delay: 1.2s; }
+    .ring:nth-child(4) { width: 660px; height: 660px; border: 1px solid rgba(168,188,126,0.05); animation-delay: 1.8s; }
+    @keyframes pulse-ring { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.04)} }
+
+    .hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; opacity: 0; animation: fade-up 0.8s 0.2s forwards; position: relative; }
+    .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(56px,10vw,100px); font-weight: 600; color: var(--parchment); line-height: 0.95; opacity: 0; animation: fade-up 0.8s 0.4s forwards; position: relative; }
+    .hero-title em { color: var(--gold); font-style: italic; }
+    .hero-sub { font-size: 15px; color: var(--sage); margin-top: 28px; font-weight: 300; letter-spacing: 0.08em; opacity: 0; animation: fade-up 0.8s 0.6s forwards; position: relative; }
+    .hero-scroll { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fade-up 0.8s 1s forwards; }
+    .hero-scroll span { font-size: 10px; letter-spacing: 0.18em; color: rgba(245,240,230,0.3); text-transform: uppercase; }
+    .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scroll-pulse 2s ease-in-out infinite; }
+    @keyframes scroll-pulse { 0%,100%{opacity:0.35} 50%{opacity:1} }
+    @keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* SHARED */
+    .section-tag { display: inline-block; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--moss); border: 1px solid var(--fern); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; background: rgba(74,102,48,0.07); }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px,5vw,54px); font-weight: 600; color: var(--forest); line-height: 1.1; margin-bottom: 20px; }
+    .section-body { font-size: 16px; line-height: 1.85; color: #3d4a30; max-width: 600px; }
+
+    /* ABOUT */
+    #about { padding: 100px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1100px; margin: 0 auto; }
+    .about-image-wrap { position: relative; }
+    .about-photo-placeholder { width: 100%; aspect-ratio: 3/4; background: var(--forest); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+    .about-photo-placeholder svg { opacity: 0.25; }
+    .about-photo-placeholder span { color: rgba(163,188,126,0.45); font-size: 13px; }
+    .about-frame { position: absolute; top: 14px; left: 14px; right: -14px; bottom: -14px; border: 1px solid var(--fern); border-radius: 4px; opacity: 0.35; z-index: -1; }
+    .about-name { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 600; color: var(--forest); margin-bottom: 4px; }
+    .about-role { font-size: 12px; color: var(--fern); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 28px; }
+    .about-divider { width: 44px; height: 1px; background: var(--gold); margin-bottom: 28px; }
+    .about-quote { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-style: italic; color: var(--moss); line-height: 1.55; margin-bottom: 24px; padding-left: 18px; border-left: 2px solid var(--gold); }
+
+    /* WHAT — CSS :target tabs */
+    #what { background: var(--forest); padding: 96px 48px; }
+    #what-inner { max-width: 1100px; margin: 0 auto; }
+    #what .section-title { color: var(--parchment); }
+    #what .section-body { color: var(--sage); }
+    #what .section-tag { color: var(--gold-lt); border-color: rgba(200,168,75,0.35); background: rgba(200,168,75,0.07); }
+    .tab-anchor { display: block; height: 0; overflow: hidden; }
+
+    .bow-tabs { display: flex; margin-top: 48px; border-bottom: 1px solid rgba(168,188,126,0.15); }
+    .bow-tab { flex: 1; display: block; padding: 18px 20px; text-decoration: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: background 0.2s; }
+    .bow-tab:hover { background: rgba(245,240,230,0.04); }
+    .bow-tab-num { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; color: rgba(200,168,75,0.2); line-height: 1; margin-bottom: 6px; transition: color 0.2s; }
+    .bow-tab-name { font-size: 14px; font-weight: 500; color: rgba(245,240,230,0.45); transition: color 0.2s; }
+
+    .bow-panel { display: none; padding: 32px; background: rgba(245,240,230,0.04); border: 1px solid rgba(168,188,126,0.12); border-top: none; animation: fade-up 0.3s forwards; }
+    .bow-panel h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--gold-lt); margin-bottom: 12px; }
+    .bow-panel p { font-size: 15px; color: var(--sage); line-height: 1.85; }
+
+    /* Default: recurve shown */
+    #panel-recurve { display: block; }
+    .bow-tabs a[href="#tab-recurve"] { border-bottom-color: var(--gold); }
+    .bow-tabs a[href="#tab-recurve"] .bow-tab-num { color: rgba(200,168,75,0.6); }
+    .bow-tabs a[href="#tab-recurve"] .bow-tab-name { color: var(--parchment); }
+
+    /* Compound targeted */
+    #tab-compound:target ~ .bow-panels #panel-recurve { display: none; }
+    #tab-compound:target ~ .bow-panels #panel-compound { display: block; }
+    #tab-compound:target ~ .bow-tabs a[href="#tab-recurve"] { border-bottom-color: transparent; }
+    #tab-compound:target ~ .bow-tabs a[href="#tab-recurve"] .bow-tab-num { color: rgba(200,168,75,0.2); }
+    #tab-compound:target ~ .bow-tabs a[href="#tab-recurve"] .bow-tab-name { color: rgba(245,240,230,0.45); }
+    #tab-compound:target ~ .bow-tabs a[href="#tab-compound"] { border-bottom-color: var(--gold); }
+    #tab-compound:target ~ .bow-tabs a[href="#tab-compound"] .bow-tab-num { color: rgba(200,168,75,0.6); }
+    #tab-compound:target ~ .bow-tabs a[href="#tab-compound"] .bow-tab-name { color: var(--parchment); }
+
+    /* Traditional targeted */
+    #tab-traditional:target ~ .bow-panels #panel-recurve { display: none; }
+    #tab-traditional:target ~ .bow-panels #panel-traditional { display: block; }
+    #tab-traditional:target ~ .bow-tabs a[href="#tab-recurve"] { border-bottom-color: transparent; }
+    #tab-traditional:target ~ .bow-tabs a[href="#tab-recurve"] .bow-tab-num { color: rgba(200,168,75,0.2); }
+    #tab-traditional:target ~ .bow-tabs a[href="#tab-recurve"] .bow-tab-name { color: rgba(245,240,230,0.45); }
+    #tab-traditional:target ~ .bow-tabs a[href="#tab-traditional"] { border-bottom-color: var(--gold); }
+    #tab-traditional:target ~ .bow-tabs a[href="#tab-traditional"] .bow-tab-num { color: rgba(200,168,75,0.6); }
+    #tab-traditional:target ~ .bow-tabs a[href="#tab-traditional"] .bow-tab-name { color: var(--parchment); }
+
+    /* Recurve targeted (re-activate after switching away) */
+    #tab-recurve:target ~ .bow-panels #panel-compound { display: none; }
+    #tab-recurve:target ~ .bow-panels #panel-traditional { display: none; }
+    #tab-recurve:target ~ .bow-panels #panel-recurve { display: block; }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-recurve"] { border-bottom-color: var(--gold); }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-recurve"] .bow-tab-num { color: rgba(200,168,75,0.6); }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-recurve"] .bow-tab-name { color: var(--parchment); }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-compound"] { border-bottom-color: transparent; }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-compound"] .bow-tab-num { color: rgba(200,168,75,0.2); }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-compound"] .bow-tab-name { color: rgba(245,240,230,0.45); }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-traditional"] { border-bottom-color: transparent; }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-traditional"] .bow-tab-num { color: rgba(200,168,75,0.2); }
+    #tab-recurve:target ~ .bow-tabs a[href="#tab-traditional"] .bow-tab-name { color: rgba(245,240,230,0.45); }
+
+    /* FACTS */
+    #facts { background: var(--bark); }
+    .facts-inner { display: grid; grid-template-columns: repeat(4,1fr); }
+    .fact-item { padding: 48px 28px; text-align: center; border-right: 1px solid rgba(168,188,126,0.1); }
+    .fact-item:last-child { border-right: none; }
+    .fact-num { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 600; color: var(--gold); line-height: 1; margin-bottom: 10px; }
+    .fact-label { font-size: 11px; color: var(--sage); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* WHY — checkbox accordion */
+    #why { padding: 96px 48px; max-width: 1100px; margin: 0 auto; }
+    .reasons { margin-top: 56px; }
+    .reason { border-top: 1px solid rgba(74,102,48,0.15); }
+    .reasons .reason:last-child { border-bottom: 1px solid rgba(74,102,48,0.15); }
+    .reason-label { display: grid; grid-template-columns: 72px 1fr auto; gap: 24px; align-items: center; padding: 28px 8px; cursor: pointer; transition: padding-left 0.25s; user-select: none; }
+    .reason-label:hover { padding-left: 16px; }
+    .reason-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 600; color: rgba(74,102,48,0.18); line-height: 1; transition: color 0.25s; }
+    .toggle:checked + .reason-label .reason-num { color: var(--fern); }
+    .reason-title-text { font-size: 18px; font-weight: 500; color: var(--forest); }
+    .reason-arrow { font-size: 22px; color: var(--fern); transition: transform 0.3s; display: inline-block; }
+    .toggle:checked + .reason-label .reason-arrow { transform: rotate(45deg); }
+    .reason-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; padding: 0 8px 0 96px; }
+    .toggle:checked ~ .reason-body { max-height: 200px; padding: 0 8px 28px 96px; }
+    .reason-body p { font-size: 15px; color: #4a5c35; line-height: 1.85; }
+
+    /* GALLERY */
+    #gallery { background: var(--forest); overflow: hidden; }
+    .gallery-track { display: flex; }
+    .gallery-item { flex: 1; aspect-ratio: 4/3; overflow: hidden; position: relative; border-right: 1px solid rgba(168,188,126,0.07); }
+    .gallery-item:last-child { border-right: none; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(40%) brightness(0.75); transition: filter 0.5s, transform 0.5s; }
+    .gallery-item:hover img { filter: grayscale(0%) brightness(0.95); transform: scale(1.05); }
+    .gallery-label { position: absolute; bottom: 14px; left: 14px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,240,230,0.65); background: rgba(27,46,27,0.65); padding: 4px 10px; border-radius: 2px; }
+
+    /* FOOTER */
+    footer { background: var(--ink); padding: 44px 48px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--sage); }
+    .footer-copy { font-size: 12px; color: rgba(163,188,126,0.4); letter-spacing: 0.06em; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { gap: 16px; }
+      #about { grid-template-columns: 1fr; gap: 48px; padding: 72px 24px; }
+      .about-image-wrap { max-width: 300px; margin: 0 auto; }
+      #what, #why { padding: 72px 24px; }
+      .bow-tabs { flex-direction: column; }
+      .facts-inner { grid-template-columns: 1fr 1fr; }
+      .gallery-track { flex-wrap: wrap; }
+      .gallery-item { flex: 1 1 50%; }
+      footer { flex-direction: column; gap: 10px; text-align: center; padding: 32px 24px; }
+      .reason-label { grid-template-columns: 52px 1fr auto; gap: 16px; }
+      .reason-body, .toggle:checked ~ .reason-body { padding-left: 68px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Ali Mohamed</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#what">The Sport</a></li>
+    <li><a href="#facts">Facts</a></li>
+    <li><a href="#why">Why I Love It</a></li>
+  </ul>
+</nav>
+
+<div id="hero">
+  <div class="hero-rings">
+    <div class="ring"></div><div class="ring"></div>
+    <div class="ring"></div><div class="ring"></div>
+  </div>
+  <p class="hero-eyebrow">My Passion &middot; My Hobby</p>
+  <h1 class="hero-title">The Art of<br/><em>Archery</em></h1>
+  <p class="hero-sub">Focus &middot; Breathe &middot; Release</p>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="about-image-wrap">
+    <img src="your-photo.jpg" alt="Ali Mohamed" class="about-photo" width="500" style="border-radius: 20px;">
+      
+    <div class="about-frame"></div>
+  </div>
+  <div>
+    <span class="section-tag">About Me</span>
+    <div class="about-name">Ali Mohamed</div>
+    <div class="about-role">Archery Enthusiast</div>
+    <div class="about-divider"></div>
+    <blockquote class="about-quote">"The arrow that flies truest is the one released with a calm heart."</blockquote>
+    <p class="section-body">Hi, I'm Ali. Archery isn't just a sport to me — it's a practice of stillness in a busy world. Every time I pick up a bow, I step into a quiet place where nothing else matters except the target in front of me. This page is my way of sharing that world with you.</p>
+  </div>
+</section>
+
+<section id="what">
+  <div id="what-inner">
+    <span class="section-tag">The Sport</span>
+    <h2 class="section-title">What is Archery?</h2>
+    <p class="section-body">Archery is the practice of shooting arrows with a bow — one of humanity's oldest skills, used for hunting, warfare, and ceremony for over 10,000 years. Today it is a precision Olympic sport and a deeply meditative hobby practiced worldwide.</p>
+
+    <span id="tab-recurve" class="tab-anchor"></span>
+    <span id="tab-compound" class="tab-anchor"></span>
+    <span id="tab-traditional" class="tab-anchor"></span>
+
+    <div class="bow-tabs">
+      <a class="bow-tab" href="#tab-recurve">
+        <div class="bow-tab-num">01</div>
+        <div class="bow-tab-name">Recurve Bow</div>
+      </a>
+      <a class="bow-tab" href="#tab-compound">
+        <div class="bow-tab-num">02</div>
+        <div class="bow-tab-name">Compound Bow</div>
+      </a>
+      <a class="bow-tab" href="#tab-traditional">
+        <div class="bow-tab-num">03</div>
+        <div class="bow-tab-name">Traditional Bow</div>
+      </a>
+    </div>
+
+    <div class="bow-panels">
+      <div class="bow-panel" id="panel-recurve">
+        <h3>Recurve Bow</h3>
+        <p>The recurve is the only bow used in the Olympic Games. Its distinctive tips curve away from the archer, storing more energy than a straight bow. Used since ancient times by mounted warriors and refined over millennia, it demands precise posture, consistent anchor points, and excellent breath control. Most beginners and competitive archers start here.</p>
+      </div>
+      <div class="bow-panel" id="panel-compound">
+        <h3>Compound Bow</h3>
+        <p>The compound bow uses a system of cables and cams (pulleys) to reduce the draw weight at full draw — a mechanic known as "let-off." This allows the archer to hold steady for longer and aim with greater precision. Popular in hunting and target shooting, it is a triumph of modern engineering applied to an ancient art.</p>
+      </div>
+      <div class="bow-panel" id="panel-traditional">
+        <h3>Traditional Bow</h3>
+        <p>Traditional archery — longbow or bare bow — strips away every mechanical aid. No sights, no stabilisers, no let-off. The archer relies entirely on instinct, muscle memory, and feel built through thousands of repetitions. It is the purest and most demanding form of the sport, and the most historically rich.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="facts">
+  <div class="facts-inner">
+    <div class="fact-item">
+      <div class="fact-num">10,000+</div>
+      <div class="fact-label">Years of history</div>
+    </div>
+    <div class="fact-item">
+      <div class="fact-num">70m</div>
+      <div class="fact-label">Olympic range</div>
+    </div>
+    <div class="fact-item">
+      <div class="fact-num">1900</div>
+      <div class="fact-label">First Olympic year</div>
+    </div>
+    <div class="fact-item">
+      <div class="fact-num">128</div>
+      <div class="fact-label">Countries competing</div>
+    </div>
+  </div>
+</div>
+
+<section id="why">
+  <span class="section-tag">My Reasons</span>
+  <h2 class="section-title">Why I Love It</h2>
+  <div class="reasons">
+
+    <div class="reason">
+      <input class="toggle" type="checkbox" id="r1" checked/>
+      <label class="reason-label" for="r1">
+        <span class="reason-num">01</span>
+        <span class="reason-title-text">It demands total focus</span>
+        <span class="reason-arrow">+</span>
+      </label>
+      <div class="reason-body"><p>When you draw a bow, the whole world narrows to a single point. There is no room for distraction — your mind, body, and breath must all align in one perfect moment. It is the closest thing to meditation I have ever found in a sport.</p></div>
+    </div>
+
+    <div class="reason">
+      <input class="toggle" type="checkbox" id="r2"/>
+      <label class="reason-label" for="r2">
+        <span class="reason-num">02</span>
+        <span class="reason-title-text">It rewards patience</span>
+        <span class="reason-arrow">+</span>
+      </label>
+      <div class="reason-body"><p>Archery is not about strength or speed. It is about repetition, stillness, and consistency. Progress comes slowly and honestly — and that makes every improvement feel genuinely earned.</p></div>
+    </div>
+
+    <div class="reason">
+      <input class="toggle" type="checkbox" id="r3"/>
+      <label class="reason-label" for="r3">
+        <span class="reason-num">03</span>
+        <span class="reason-title-text">You can see yourself improve</span>
+        <span class="reason-arrow">+</span>
+      </label>
+      <div class="reason-body"><p>Your groupings do not lie. Session by session, those scattered arrows tighten into clusters. There is a quiet satisfaction in watching your arrow land exactly where your mind intended it to go.</p></div>
+    </div>
+
+    <div class="reason">
+      <input class="toggle" type="checkbox" id="r4"/>
+      <label class="reason-label" for="r4">
+        <span class="reason-num">04</span>
+        <span class="reason-title-text">It connects you to history</span>
+        <span class="reason-arrow">+</span>
+      </label>
+      <div class="reason-body"><p>Every time I nock an arrow, I am doing something humans have done for thousands of years — from ancient hunters to Olympic champions. There is something quietly profound about that continuity.</p></div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Ali Mohamed</div>
+  <div class="footer-copy">Archery Hobby Page &middot; Made with passion</div>
+</footer>
+
+</body>
+</html>
